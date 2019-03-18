@@ -33,23 +33,27 @@ server {
 	#
 	# include snippets/snakeoil.conf;
 
-	root /var/www/html;
+	root /var/www/html/wp;
 
 	# Add index.php to the list if you are using PHP
 	index index.php index.html index.htm index.nginx-debian.html;
 
-	server_name _;
+	server_name 13.127.192.164;
+        location /{
+                       try_files $uri $uri/ /index.php?q=$uri&$args;
+                 }
 
-	location / {
-		# First attempt to serve request as file, then
-		# as directory, then fall back to displaying a 404.
-		try_files $uri $uri/ =404;
-	}
 
 	# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
 	#
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
+                #  try_files $uri =404;
+        include fastcgi_params;
+    #    fastcgi_pass 127.0.0.1:9000;
+        #fastcgi_index index.php;
+        fastcgi_intercept_errors on;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 	#
 	#	# With php7.0-cgi alone:
 	#	fastcgi_pass 127.0.0.1:9000;
@@ -64,12 +68,9 @@ server {
 		deny all;
 	}
 }
-# Virtual Host configuration for example.com
-# You can move that to a different file under sites-available/ and symlink that
-# to sites-enabled/ to enable it.
 server {
-	listen 95 ;
-	listen [::]:95 default_server;
+	listen 80;
+	listen [::]:80;
 
 	# SSL configuration
 	#
@@ -87,23 +88,27 @@ server {
 	#
 	# include snippets/snakeoil.conf;
 
-	root /var/www/html/software;
+	root /var/www/html/software/webroot;
 
 	# Add index.php to the list if you are using PHP
 	index index.php index.html index.htm index.nginx-debian.html;
 
-	server_name http://13.127.146.103/software;
+	server_name 13.127.192.164;
+        location /software{
+                        try_files $uri $uri/ /index.php?$args;
+                 }
 
-	location /software {
-		# First attempt to serve request as file, then
-		# as directory, then fall back to displaying a 404.
-		try_files $uri $uri/ =404;
-	}
 
 	# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
 	#
 	location ~ \.php$ {
 		include snippets/fastcgi-php.conf;
+                #  try_files $uri =404;
+        include fastcgi_params;
+    #    fastcgi_pass 127.0.0.1:9000;
+        #fastcgi_index index.php;
+        fastcgi_intercept_errors on;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 	#
 	#	# With php7.0-cgi alone:
 	#	fastcgi_pass 127.0.0.1:9000;
@@ -118,3 +123,23 @@ server {
 		deny all;
 	}
 }
+
+
+# Virtual Host configuration for example.com
+#
+# You can move that to a different file under sites-available/ and symlink that
+# to sites-enabled/ to enable it.
+#
+#server {
+#	listen 80;
+#	listen [::]:80;
+#
+#	server_name example.com;
+#
+#	root /var/www/example.com;
+#	index index.html;
+#
+#	location / {
+#		try_files $uri $uri/ =404;
+#	}
+#}

@@ -28,7 +28,7 @@
 <!-- Daterange picker plugins css -->
     <link href="<?php echo $this->request->webroot; ?>Admin/assets/plugins/timepicker/bootstrap-timepicker.min.css" rel="stylesheet">
     <link href="<?php echo $this->request->webroot; ?>Admin/assets/plugins/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-  
+
 	</head>
 <body class="fix-header fix-sidebar card-no-border">
     <!-- ============================================================== -->
@@ -154,7 +154,7 @@
     <script src="<?php echo $this->request->webroot; ?>Admin/assets/plugins/styleswitcher/jQuery.style.switcher.js"></script>
 	<link href="<?php echo $this->request->webroot; ?>Admin/assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css" rel="stylesheet" />
     <script src="<?php echo $this->request->webroot; ?>Admin/assets/plugins/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js" type="text/javascript"></script>
-  
+
 
 	
 	 

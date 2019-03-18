@@ -20,6 +20,7 @@ class UserproductTable extends Table
         parent::initialize($config);
 		// $this->primaryKey('id');
 		$this->belongsTo('Product');
+		$this->belongsTo('users'); 
 		$this->table('user_product');
 		
     }

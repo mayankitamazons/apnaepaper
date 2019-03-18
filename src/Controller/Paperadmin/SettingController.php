@@ -55,11 +55,14 @@ class SettingController extends AppController
 		  if($route_name && $route_code)
 		  {
 			$data=$RouteTable->find()
-					  ->where(['route_code'=>$route_code,'parent_user_id'=>$parent_user_id])
+					  ->where(['route_code'=>$route_code,'parent_user_id'=>$parent_user_id,'status'=>'y'])
 					  ->first();
 			
 			if(count($data)>0)
 			{
+				$this->Flash->set('This Route Code is Already Created', [
+						'element' => 'error'
+					]);
 				return $this->redirect(['action' => 'routelist']);
 			}
 			else
@@ -223,7 +226,7 @@ class SettingController extends AppController
 		return $this->redirect(['action' => 'routelist']);  
 		
 	}
-	public function editarea()
+	public function editgroup()
 	{
 	   if($this->request->is('post'))
         {
@@ -238,7 +241,7 @@ class SettingController extends AppController
 			if(count($areadata)>0)
 			{
 				$areadata->area_name=$area_name;
-				$old_area_code=$areadata->route_code;
+				$old_area_code=$areadata->area_code;
 				if($area_code!=$old_area_code)
 				{
 				   $areamatch=$AreaTable->find()
@@ -248,17 +251,17 @@ class SettingController extends AppController
 					// die;
 					if($areamatch>0)
 					{
-					   $this->Flash->set('This Area Code is Already Used Try Another', [
+					   $this->Flash->set('This Group Code is Already Used Try Another', [
 								'element' => 'error'
 							]);
-						return $this->redirect(['action' => 'arealist']); 
+						return $this->redirect(['action' => 'grouplist']); 
 					}
 				}
-					$areadata->area_code=$route_code;
-					$areadata->route_id=$route_id;
+					$areadata->area_code=$area_code;
+					$areadata->delivery_charge=$delivery_charge;
 					if($AreaTable->save($areadata))
 							{
-								$this->Flash->set('Area Data Updated Successfully', [
+								$this->Flash->set('Group Data Updated Successfully', [
 											'element' => 'success'
 										]);
 							}
@@ -283,9 +286,9 @@ class SettingController extends AppController
 			$this->Flash->set('Invalid Access', [
 								'element' => 'error'
 							]);	
-			return $this->redirect(['action' => 'arealist']); 
+			return $this->redirect(['action' => 'grouplist']); 
 		}
-		return $this->redirect(['action' => 'arealist']); 
+		return $this->redirect(['action' => 'grouplist']); 
 	}
 	public function viewarea()
 	{
@@ -294,7 +297,7 @@ class SettingController extends AppController
 			extract($this->request->data);
 			$AreaTable = TableRegistry::get('Area');
 			$areadata=$AreaTable->find()
-					->contain(['Route'])
+					
 					  ->where(['Area.id'=>$area_id])
 					  ->first();
 			if(count($areadata)>0)
@@ -320,7 +323,7 @@ class SettingController extends AppController
 	    echo json_encode($response);
 		die;
 	}
-	public function arealist()
+	public function grouplist()
     {
 		if($this->Auth->user())
 		{
@@ -330,12 +333,9 @@ class SettingController extends AppController
 		$areaTable = TableRegistry::get('Area');
 		$routeTable = TableRegistry::get('Route');
 		$areadata=$areaTable->find()
-						->contain(['Route'])
-					  ->where(['Area.status'=>'y','Area.parent_user_id'=>$parent_user_id,'Route.status'=>'y','Route.parent_user_id'=>$parent_user_id])
+					->where(['Area.status'=>'y','Area.parent_user_id'=>$parent_user_id])
 					  ->toArray();
-        $routedata=$routeTable->find()
-						->where(['status'=>'y','parent_user_id'=>$parent_user_id])
-						->toArray();
+      
 		 // pr($areadata);
 		 // die;
 		if($this->request->is('post'))
@@ -343,25 +343,30 @@ class SettingController extends AppController
 			// pr($this->request->data);
 			// die;
 		  extract($this->request->data);
-		  if($area_name && $area_code && $route_id)
+		  if($area_name && $area_code)
 		  {
 			$data=$areaTable->find()
 						
-					  ->where(['area_code'=>$area_code,'parent_user_id'=>$parent_user_id])
+					  ->where(['area_code'=>$area_code,'parent_user_id'=>$parent_user_id,'status'=>'y'])
 					  ->first();
 			
 			if(count($data)>0)
 			{
-				return $this->redirect(['action' => 'arealist']);
+				$this->Flash->set('This Area Code is Already Created', [
+						'element' => 'error'
+					]);
+				return $this->redirect(['action' => 'grouplist']);
 			}
 			else
 			{
 				// new entity
 				$this->request->data['parent_user_id']=$parent_user_id;
 				$entity=$areaTable->newEntity($this->request->data);
+				// pr($entity);
+				// die;
 				if($areaTable->save($entity))
 				{
-					return $this->redirect(['action' => 'arealist']);
+					return $this->redirect(['action' => 'grouplist']);
 				}
 				else
 				{
@@ -371,10 +376,13 @@ class SettingController extends AppController
 		  }
 		  else
 		  {
-			return $this->redirect(['action' => 'arealist']);  
+			  	$this->Flash->set('Required Paramter missing', [
+										'element' => 'error'
+									]);
+			return $this->redirect(['action' => 'grouplist']);  
 		  }
 		}
-		$this->set(compact('areadata','routedata'));
+		$this->set(compact('areadata'));
     }
 	public function deletearea($area_id)
 	{
@@ -413,7 +421,7 @@ class SettingController extends AppController
 						'element' => 'error'
 					]);	
 		}
-		return $this->redirect(['action' => 'arealist']);  
+		return $this->redirect(['action' => 'grouplist']);  
 		
 	}
 	public function productlist()
@@ -427,47 +435,41 @@ class SettingController extends AppController
 		$productdata=$ProductTable->find()
 					  ->where(['status'=>'y','parent_user_id'=>$parent_user_id])
 					  ->toArray();
-		// pr($productdata);
-		// die;
-		if($this->request->is('post'))
-        {
-			// pr($this->request->data);
-			// die;
-			$this->request->data['parent_user_id']=$parent_user_id;
-		  extract($this->request->data);
-		  if($product_name && $product_code )
-		  {
-			$data=$ProductTable->find()
-					  ->where(['product_code'=>$product_code,'parent_user_id'=>$parent_user_id])
-					  ->first();
+		$i=0;
+		foreach($productdata as $product)
+		{
+			$p[$i]['id']=$product['id'];
+			$p[$i]['product_name']=$product['product_name'];
+			$p[$i]['product_code']=$product['product_code'];
+			$p[$i]['product_copies']=$this->productcopies($product['id']);
 			
-			if(count($data)>0)
-			{
-				return $this->redirect(['action' => 'productlist']);
+			$i++;
 			}
-			else
-			{
-				// new entity
-				$entity=$ProductTable->newEntity($this->request->data);
-				if($ProductTable->save($entity))
-				{
-					return $this->redirect(['action' => 'productlist']);
-				}
-				else
-				{
-					
-				}
-			}
-		  }
-		  else
-		  {
-			return $this->redirect(['action' => 'productlist']);  
-		  }
-		}
+			$productdata=$p;
+			
 		$this->set(compact('productdata'));
     }
+	public function productcopies($product_id)
+	{
+		$connection = ConnectionManager::get('default');
+		$results=$connection->execute("select sum(copies) as totalcopy from user_product where product_id='$product_id'")->fetch('assoc');
+		if($results>0)
+		{
+			return $results['copies'];
+		}
+		else
+		{
+		return 0;
+		}
+	}
+	
 	public function editproduct($product_id)
 	{
+		if($this->Auth->user())
+		{
+			$parent_user_id=$this->Auth->user('id');
+		
+		}
 		$ProductTable = TableRegistry::get('Product');
 		$productdata=$ProductTable->find()
 					  ->where(['id'=>$product_id])
@@ -493,6 +495,39 @@ class SettingController extends AppController
 			   $this->set(compact('m'));	
 			}
 			$this->set(compact('productdata'));
+			if($this->request->is('post'))
+			{
+				//pr($this->request->data);
+				extract($this->request->data);
+				$productdata->product_name=$product_name;
+				//$productdata->product_code=$product_code;
+				$productdata->price_type=$price_type;
+				$connection = ConnectionManager::get('default');
+					if($price_type=="daily")
+					{
+					  $q="UPDATE prices_daily SET sun='$sun',mon='$mon',tue='$tue',wed='$wed',thu='$thu',fri='$fri',sat='$sat' WHERE product_id='$product_id'";
+					 
+					
+					}
+					else
+					{
+						$productdata->fix_price=$fix_price; 
+					}
+					
+					if($result=$ProductTable->save($productdata))
+					{
+						$pd=$connection->execute($q);
+							$this->Flash->set('Product Detail Updated  Successfully', [
+										'element' => 'success'
+									]);
+								return $this->redirect(['action' => 'productlist']);
+					}   
+					else
+					{
+						
+					}
+				
+			}
 		}
 		else
 		{
@@ -559,7 +594,7 @@ class SettingController extends AppController
 			if($product_name && $product_code)
 			{
 				$data=$ProductTable->find()
-						  ->where(['product_code'=>$product_code,'parent_user_id'=>$parent_user_id])
+						  ->where(['product_code'=>$product_code,'parent_user_id'=>$parent_user_id,'status'=>'y'])
 						  ->first();
 				if(count($data)>0)
 				{
@@ -592,22 +627,7 @@ class SettingController extends AppController
 							$dailyentity=$PricesdailyTable->newEntity($this->request->data);
 							 $PricesdailyTable->save($dailyentity);
 						}
-						if($price_type=="monthly")
-						{
-							try{
-							$monentity=$PricesmonthlyTable->newEntity($this->request->data);
-							// pr($monentity);
-							// die;
-							 if($q=$PricesmonthlyTable->save($monentity))
-							 {
-								
-								
-							 }
-							}catch(Exception $e){
-								echo $e->getMessage();
-								die;
-							}
-						}
+						
 						// save successfully 
 								$this->Flash->set('Product Added Successfully', [
 										'element' => 'success'

@@ -8,7 +8,7 @@
                 <!-- ============================================================== -->
                 <div class="navbar-header">
                     
-						<p style="color:white;">Apna Epaper</p>
+						<p style="color:white;">AE</p>
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Logo -->
@@ -278,7 +278,7 @@
                         <li> <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="ti-settings"></i><span class="hide-menu">Setting</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="<?php echo $this->Url->build(['controller'=>'setting','action'=>'routelist']);?>">Route</a></li>
-                                <li><a href="<?php echo $this->Url->build(['controller'=>'setting','action'=>'arealist']);?>">Area</a></li>
+                                <li><a href="<?php echo $this->Url->build(['controller'=>'setting','action'=>'grouplist']);?>">Additional Group</a></li>
                                 <li><a href="<?php echo $this->Url->build(['controller'=>'setting','action'=>'productlist']);?>">Product</a></li>
                                 <!--li><a href="profile.html">Profile</a></li!-->
                              
@@ -290,6 +290,7 @@
                                 <li><a href="<?php echo $this->Url->build(['controller'=>'user','action'=>'hokerlist']);?>">Hoker</a></li>
                                 <li><a href="<?php echo $this->Url->build(['controller'=>'user','action'=>'userlist']);?>"> User list </a></li>
                                 <li><a href="<?php echo $this->Url->build(['controller'=>'user','action'=>'createuser']);?>"> Create User  </a></li>
+                                <li><a href="<?php echo $this->Url->build(['controller'=>'user','action'=>'viewuser']);?>"> Search User  </a></li>
                                 
                             </ul>
                         </li>

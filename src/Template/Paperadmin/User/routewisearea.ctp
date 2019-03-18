@@ -3,5 +3,5 @@
                                     <label for="md_checkbox_<?php echo $i;?>"><?php echo $a['area_name']; ?></label>
                                     
 	<?php  $i++;} } else { ?>
-	<p>No Area Under this Route ,  <a href="<?php echo $this->Url->build(['controller'=>'users','action'=>'arealist']);?>">Create it First</a></p>
+	<p>No Additional Group Created  ,  <a href="<?php echo $this->Url->build(['controller'=>'setting','action'=>'arealist']);?>">Create it First</a></p>
 	<?php } ?>

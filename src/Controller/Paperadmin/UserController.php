@@ -19,15 +19,8 @@ class UserController extends AppController
         parent::initialize();
 		$this->Auth->allow(['usersearch']);
 		$this->viewBuilder()->layout('admin/admin_home'); 
-		// if(!$this->Auth->user())
-		// {
-			// $this->viewBuilder()->layout('admin/admin_login'); 
-		// }
-		// else
-		// {
-			// $this->viewBuilder()->layout('admin/admin_login'); 
-		// }
-		$access_token="EAACEdEose0cBALE3GCBHIXuFnmRZCj0i1djWHg9LsrKaW3OInOGseTnRP7Jm8Vs1wPybi3BmQN9R1kPPW5jBz0jpTBwXCbpZAqFrtas5zqhJVZAvsz1IguemOyCgU2FA8Esl2kk8Hy0u3XiejdkYqngwcYXyN9zwoQWRXx6fxGjBB0w8YrOQAlgVSGkkwwZD";
+		
+		
 	}
     public function beforeFilter(Event $event) {
 		parent::beforeFilter($event);
@@ -109,27 +102,28 @@ class UserController extends AppController
 	{
 		// pr($req_data);
 		// die;
-		$route_name=strtoupper($req_data['route_name']);
-		$area_name=strtoupper($req_data['area_name']);
-		$words = explode(" ",$route_name);
-		$code_pre = "";
-        $i=1;
-		foreach ($words as $w) {
-		  $code_pre .= $w[0];
-		  if($i>2)
-			  break;
-		  $i++;
-		}
-		$words2 = explode(" ",$area_name);
-		$j=1;
-		foreach ($words2 as $w) {
-		  $code_pre .= $w[0];
-		  if($j>2)
-			  break;
-		  $j++;
-		}
+		// $route_name=strtoupper($req_data['route_name']);
+		// $area_name=strtoupper($req_data['area_name']);
+		// $words = explode(" ",$route_name);
+		// $code_pre = "";
+        // $i=1;
+		// foreach ($words as $w) {
+		  // $code_pre .= $w[0];
+		  // if($i>2)
+			  // break;
+		  // $i++;
+		// }
+		// $words2 = explode(" ",$area_name);
+		// $j=1;
+		// foreach ($words2 as $w) {
+		  // $code_pre .= $w[0];
+		  // if($j>2)
+			  // break;
+		  // $j++;
+		// }
 		$new_id=$req_data['last_inserted_id']+1;
-		$user_code=$code_pre.$new_id;
+		//$user_code=$code_pre.$new_id;
+		$user_code="A".$new_id;
 		// pr($code_pre);
 		// die;
 		return $user_code;
@@ -180,6 +174,52 @@ class UserController extends AppController
 	    echo json_encode($response);
 		die;
 	}
+	public function edithoker()
+    {
+		extract($this->request->data);
+      if($user_id)
+		{
+		
+			$UserTable = TableRegistry::get('Users');
+			$userdata=$UserTable->find()
+						// ->contain(['Route'])
+					  ->where(['Users.id'=>$user_id])
+					  ->first();
+			if(count($userdata)>0)
+			{
+				$userdata->name=$name;
+				$userdata->email=$email;
+				$userdata->mobile=$mobile;
+				$userdata->join_date=$join_date;
+				$userdata->route_id=$route_id;
+				if($UserTable->save($userdata))
+				{
+					$this->Flash->set('Hoker Edit Successfully', [
+						'element' => 'success'
+					]);	
+				}
+				else
+				{
+					$this->Flash->set('No Hoker  Found', [
+						'element' => 'error'
+					]);	
+				}
+			}
+			else
+			{
+				$this->Flash->set('No Hoker  Found', [
+						'element' => 'error'
+					]);	
+			}
+		}
+		else
+		{
+		   $this->Flash->set('No Hoker  Found', [
+						'element' => 'error'
+					]);	
+		}
+		return $this->redirect(['action' => 'hokerlist']); 
+    }
 	public function deletehoker($user_id)
 	{
 		if($user_id)
@@ -194,7 +234,7 @@ class UserController extends AppController
 				$userdata->status="n";
 				if($UserTable->save($userdata))
 				{
-					$this->Flash->set('Hoker Added Successfully', [
+					$this->Flash->set('Hoker Deleted Successfully', [
 						'element' => 'success'
 					]);	
 				}
@@ -246,6 +286,11 @@ class UserController extends AppController
 	}
 	public function routewiseareauser()
 	{
+		if($this->Auth->user())
+		{
+			$parent_user_id=$this->Auth->user('id');
+		
+		}
 			$this->viewBuilder()->layout(false); 
 		if($this->request->is('post'))
         {
@@ -256,7 +301,7 @@ class UserController extends AppController
 				$AreaTable = TableRegistry::get('Area');
 				$areadata=$AreaTable->find()
 						//->contain(['Area'])
-					  ->where(['Area.route_id'=>$route_id])
+					  ->where(['Area.parent_user_id'=>$parent_user_id])
 					  ->toArray();
 				// pr($routedata);
 				// die;
@@ -288,6 +333,145 @@ class UserController extends AppController
 		// die;
 		$this->set(compact('userdata'));
     }
+	
+	public function edituser($user_code)
+	{
+		if($this->Auth->user())
+		{
+			$parent_user_id=$this->Auth->user('id');
+		
+		}
+		
+		$UserTable = TableRegistry::get('Users');
+		$userdata=$UserTable->find()
+						->contain(['Userproduct'])
+						->where(['user_code'=>$user_code,'parent_user_id'=>$parent_user_id])
+						->first();
+				
+		if(count($userdata)>0)
+		{
+			$routeTable = TableRegistry::get('Route');
+			$WeekdaysTable = TableRegistry::get('Weekdays');
+			$ProductTable = TableRegistry::get('Product');
+			$routedata=$routeTable->find()
+						//->contain(['Area'])
+						->where(['status'=>'y','parent_user_id'=>$parent_user_id])
+						->toArray();
+			$Weekdaysdata=$WeekdaysTable->find()
+						//->contain(['Area'])
+						->where(['status'=>'y'])
+						->toArray();
+			$productdata=$ProductTable->find()
+					  ->where(['status'=>'y','parent_user_id'=>$parent_user_id])
+					  ->toArray();
+			  $this->set(compact('userdata','routedata','Weekdaysdata','productdata'));
+		}
+		else
+		{
+			$this->Flash->set('Invaid User Code', [
+						'element' => 'error'
+					]);
+					return $this->redirect(['action' => 'userlist']);
+		}
+	}
+	public function deleteuser($user_code)
+	{
+		if($this->Auth->user())
+		{
+			$parent_user_id=$this->Auth->user('id');
+		
+		}
+		
+		$UserTable = TableRegistry::get('Users');
+		$userdata=$UserTable->find()
+						->where(['user_code'=>$user_code,'parent_user_id'=>$parent_user_id])
+						->first();
+				
+		if(count($userdata)>0)
+		{
+			$userdata->status="block";
+			if($UserTable->save($userdata))
+			{
+				$this->Flash->set('User Account Deleted', [
+						'element' => 'success'
+					]);
+					return $this->redirect(['action' => 'userlist']);
+			}
+			else
+			{
+				$this->Flash->set('Something Went Wrong', [
+						'element' => 'error'
+					]);
+					return $this->redirect(['action' => 'userlist']);
+			}
+		}
+		else
+		{
+			$this->Flash->set('Invaid User Code', [
+						'element' => 'error'
+					]);
+					return $this->redirect(['action' => 'userlist']);
+		}
+	}
+	public function closeaccount()
+	{
+		// pr($this->request->data);
+			// die;
+	   extract($this->request->data);
+		if($this->Auth->user())
+		{
+			$parent_user_id=$this->Auth->user('id');
+		
+		}
+		
+		$UserTable = TableRegistry::get('Users');
+		$userdata=$UserTable->find()
+						->where(['user_code'=>$account_user_code,'parent_user_id'=>$parent_user_id])
+						->first();
+				
+		if(count($userdata)>0)
+		{
+			
+			$UserCloseAccountTable = TableRegistry::get('Usercloseaccount');
+			$userdata->status="close";
+			$c['user_id']=$userdata->id;
+			$c['rejoin_date']=$rejoin_date;
+			$c['close_date']=date('Y-m-d');
+			$c['current_utc']=$current_utc=strtotime(date('Y-m-d'));
+			if($UserCloseAccountTable->save())
+			{
+				if($UserTable->save($userdata))
+			{
+				$this->Flash->set('User Account Closed', [
+						'element' => 'success'
+					]);
+				return $this->redirect(['action' => 'userlist']);
+			}
+			else
+			{
+				$this->Flash->set('Something Went Wrong', [
+						'element' => 'error'
+					]);
+					return $this->redirect(['action' => 'userlist']);
+			}
+			}
+			else
+			{
+				$this->Flash->set('Something Went Wrong', [
+						'element' => 'error'
+					]);
+					return $this->redirect(['action' => 'userlist']);
+			}
+			
+		}
+		else
+		{
+			$this->Flash->set('Invaid User Code', [
+						'element' => 'error'
+					]);
+					return $this->redirect(['action' => 'userlist']);
+		}
+	}
 	public function createuser()
     {
 		if($this->Auth->user())
@@ -342,6 +526,8 @@ class UserController extends AppController
 				$u['pan_no']=$pan_no;
 				$u['join_date']=$join_date;
 				$u['extra_phoneno']=$extra_phoneno;
+				if(!$opening_balance)
+				$opening_balance=0;	
 				$u['balance']=$opening_balance;
 				$u['parent_user_id']=$parent_user_id;
 				// $u['dob']=$dob;
@@ -351,21 +537,10 @@ class UserController extends AppController
 				{
 					// get route name 
 				
-					$routedata=$routeTable->find()
-							->where(['id'=>$route_id])
-							->select(['route_name'])
-							->first();
-					// pr($routedata);
-					// die;
-					$areadata=$areaTable->find()
-							->where(['id'=>$select_area])
-							->select(['area_name'])
-							->first();
-					$req_data['route_name']=$routedata->route_name;
-					$req_data['area_name']=$areadata->area_name;
-					$req_data['name']=$name;
+				
 					$result=$UserTable->find()
 							//->contain(['Area'])
+							->where(['parent_user_id'=>$parent_user_id,'role_id'=>'1'])
 							->select(['id'])
 							->order(['id'=>'DESC'])
 							->first();
@@ -396,11 +571,17 @@ class UserController extends AppController
 							{
 								$t['cr']=$opening_balance;
 								$t['dr']=0;
+								$t['before_balance']=$opening_balance;
+								$t['after_balance']=$opening_balance;
+								
 							}
 							else
 							{
 								$t['dr']=$opening_balance;
 								$t['cr']=0;
+								$t['before_balance']=-$opening_balance;
+								$t['after_balance']=-$opening_balance;
+								
 							}
 							$t['transation_utc']=$current_utc;
 							$t['comment']="account opening balance";
@@ -436,6 +617,9 @@ class UserController extends AppController
 								  // add route plan
 								 $rp['user_id']=$inserted_user_id;
 								 $rp['route_id']=$route_id;
+								 if($select_area=='')
+									 $select_area=0;
+								 if($select_area)
 								 $rp['area_id']=$select_area;
 								 $rp['parent_user_id']=$parent_user_id;
 								 if($selected_route_user_id)
@@ -476,6 +660,7 @@ class UserController extends AppController
 								 // add print plan 
 								 $pp['user_id']=$inserted_user_id;
 								 $pp['route_id']=$route_id;
+								 if($select_area)
 								 $pp['area_id']=$select_area;
 								 $pp['parent_user_id']=$parent_user_id;
 								 if($selected_print_user_id)
@@ -647,6 +832,49 @@ class UserController extends AppController
 		}
 		die;
 	}
+	public function viewuser($user_code)
+    {
+	   if($user_code=='')
+	   { 
+            extract($this->request->data);
+          	if($this->request->is('post'))
+			{ 
+		       $user_str=explode("-",$user_detail);
+			    $user_code=trim($user_str[1]);
+			  if($user_code=='')
+				{
+					$this->Flash->set("Search user whose detail you want to show", [
+										'element' => 'error'
+										]);	
+								return $this->redirect(['action' => 'viewuser']);	
+				}
+				else
+				{
+					
+				}
+  			}
+		}
+		if($user_code)
+		{
+			$UserTable = TableRegistry::get('Users');
+			$userdata=$UserTable->find()
+						//->contain(['Usertransation'])
+						->contain(['Usertransation'=>function ($q){
+							return $q
+								->order(['Usertransation.id'=>'DESC']);
+						},'Userbill'])
+						->where(['user_code'=>$user_code])
+						->first();
+			// pr($userdata);
+			// die;
+			}
+		
+	   // echo $user_code;
+	   // die;
+
+	   $this->set(compact('user_code','userdata'));
+	
+    }
 	public function routeplan()
 	{
 		// $route_id=1;
@@ -659,7 +887,9 @@ class UserController extends AppController
 			{
 				$RouteplanTable = TableRegistry::get('Routeplan');
 				$data=$RouteplanTable->find()
-						->contain(['Users.Route.Area'])
+						->contain(['Users.Route'])
+						->contain(['Users.Area'])
+						
 					  ->where(['Routeplan.route_id'=>$route_id])
 					  ->order(['Routeplan.seq_no'=>'ASC'])
 					  ->toArray();
@@ -696,27 +926,14 @@ class UserController extends AppController
 						//->contain(['Area'])
 						->where(['status'=>'y','parent_user_id'=>$parent_user_id])
 						->toArray();
-				$AreaTable = TableRegistry::get('Area');
-					$areadata=$AreaTable->find()
-						  ->where(['route_id'=>$route_id,'parent_user_id'=>$parent_user_id])
-						  ->toArray();
+			      
 				$PrintplanTable = TableRegistry::get('Printplan');
-				if($area_id)
-				{
-					$data=$PrintplanTable->find()
-						->contain(['Users.Route.Area'])
-					  ->where(['Printplan.route_id'=>$route_id,'Users.area_id'=>$area_id,'Printplan.parent_user_id'=>$parent_user_id])
-					  ->order(['Printplan.seq_no'=>'ASC'])
-					  ->toArray();
-				}
-				else
-				{
-					$data=$PrintplanTable->find()
-						->contain(['Users.Route.Area'])
+				$data=$PrintplanTable->find()
+						->contain(['Users.Route'])
+						->contain(['Users.Area'])
 					  ->where(['Printplan.route_id'=>$route_id,'Printplan.parent_user_id'=>$parent_user_id])
 					  ->order(['Printplan.seq_no'=>'ASC'])
 					  ->toArray();
-				}
 				
 			}
 			else

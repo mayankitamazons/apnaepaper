@@ -77,6 +77,8 @@ class BillController  extends AppController
 						   $oldbillcheck=$BillmonthTable->find()
 									->where(['bill_end_date'=>$bill_date,'speific_user_id'=>'0','parent_user_id'=>$parent_user_id])
 								  ->count();
+							// pr($oldbillcheck);
+							// die;
 							if($oldbillcheck>0)
 							{
 								$this->Flash->set("Bill was already created for this month, check old bill record", [
@@ -100,10 +102,11 @@ class BillController  extends AppController
 									 $last_bill_no=0;  
 								  }
 								$connection = ConnectionManager::get('default');
-								$q="select users.id,date(users.join_date) as join_date,users.name,users.user_code,route.route_name,route.route_code,route.delivery_charge,area.area_name from users
-								inner join route on users.route_id=route.id inner join area on area.id=users.area_id  where users.id not
-								in(select  speific_user_id from bill_month where bill_month='$month1' and bill_year='$year1') and users.role_id='1' and users.parent_user_id='$parent_user_id'
+								 $q="select users.id,date(users.join_date) as join_date,users.name,users.user_code,route.route_name,route.route_code,area.delivery_charge,area.area_name from users
+								inner join route on users.route_id=route.id left join area on users.area_id=area.id  where users.id not
+								in(select  speific_user_id from bill_month where bill_month='$month1' and bill_year='$year1') and users.role_id='1'  and users.status='active' and users.parent_user_id='$parent_user_id'
 								order by users.route_id";
+								//die;
 								$userdata=$connection->execute($q)->fetchAll('assoc');
 								// pr($userdata);
 								// die;
@@ -113,6 +116,14 @@ class BillController  extends AppController
 									foreach($userdata as $user)
 									{
 										$user_id=$user['id'];
+										$trasdata=$UsertransationTable->find()
+										//->contain(['Area'])
+										->where(['user_id'=>$user_id,'parent_user_id'=>$parent_user_id])
+										->select(['after_balance'])
+										->order(['id'=>'DESC'])
+										->first();
+										// pr($trasdata);
+										// die;
 										$delivery_charge=$user['delivery_charge'];
 										$join_date=$user['join_date'];
 										$bill_amount=$this->productwiseprice($user_id,$delivery_charge,$bill_date,$join_date,$last_bill_no,$parent_user_id);
@@ -122,6 +133,9 @@ class BillController  extends AppController
 										$b['bill_amount']=$bill_amount;
 										$b['comment']="monthly bill";
 										$b['parent_user_id']=$parent_user_id;
+										$b['before_balance']=$trasdata->after_balance;
+										$b['after_balance']=$total_bill_amount+$bill_amount;
+										$user_last_balance=$trasdata->after_balance;
 										$entity=$UserbillTable->newEntity($b);
 										if($result=$UserbillTable->save($entity))
 										{
@@ -131,9 +145,14 @@ class BillController  extends AppController
 											// update user balance 
 											$ut['user_id']=$user_id;
 											$ut['dr']=$bill_amount;
+											$ut['before_balance']=$user_last_balance;
+											
+											$ut['after_balance']=$user_last_balance-$bill_amount;
 											$ut['comment']="monthly bill";
 											$ut['transation_utc']=$current_utc;
 											$ut['parent_user_id']=$parent_user_id;
+											// pr($ut);
+											// die;
 											$entity=$UsertransationTable->newEntity($ut);
 											if($UsertransationTable->save($entity))
 											{
@@ -201,6 +220,7 @@ class BillController  extends AppController
 		$routedata=$routeTable->find()
 						->where(['status'=>'y'])
 						->toArray();
+		
 		$this->set(compact('routedata'));
 	}
 	public function showbill()
@@ -208,8 +228,10 @@ class BillController  extends AppController
 		if($this->Auth->user())
 		{
 			$parent_user_id=$this->Auth->user('id');
+			$parent_user_name=$this->Auth->user('name');
 		
 		}
+		
 		$this->viewBuilder()->layout(false); 
 		$routeTable = TableRegistry::get('Route');
 		$BillmonthTable = TableRegistry::get('Billmonth');
@@ -217,7 +239,7 @@ class BillController  extends AppController
 		$routedata=$routeTable->find()
 						->where(['status'=>'y','parent_user_id'=>$parent_user_id])
 						->toArray();
-		$this->set(compact('routedata'));
+		$this->set(compact('routedata','parent_user_name'));
 		$connection = ConnectionManager::get('default');
 		if($this->request->is('post'))
         {
@@ -232,12 +254,14 @@ class BillController  extends AppController
 				$oldbillcheck=$BillmonthTable->find()
 									->where(['bill_month'=>$selected_month,'speific_user_id'=>'0','parent_user_id'=>$parent_user_id])
 								  ->count();
+				// pr($oldbillcheck);
+				// die;
 				if($oldbillcheck>0)
 				{
 					if($route_type=="all")
 					{
-					  $q="select print_plan.user_id,print_plan.seq_no,users.name,users.user_code from print_plan 
-					  inner join users on users.id=print_plan.user_id where users.role_id='1' and users.parent_user_id='$parent_user_id'
+					  $q="select print_plan.user_id,print_plan.seq_no,users.name,users.user_code,user_bill.id as bill_id,user_bill.bill_amount,
+					  user_bill.bill_status,user_bill.created  from print_plan inner join users on users.id=print_plan.user_id inner join user_bill on user_bill.user_id=users.id where users.role_id='1' and user_bill.parent_user_id='$parent_user_id' and users.parent_user_id='$parent_user_id'
 					  order by print_plan.route_id,print_plan.seq_no";
 					}
 					else
@@ -249,18 +273,31 @@ class BillController  extends AppController
 					$userdata=$connection->execute($q)->fetchAll('assoc');
 					// pr($userdata);
 					// die;
+					$UsertransationTable = TableRegistry::get('Usertransation');
 					if(count($userdata)>0)
 					{
 						$i=0;
 						foreach($userdata as $user)
 						{
 							$user_id=$re[$i]['user_id']=$user['user_id'];
+							$afterbal=$UsertransationTable->find()
+									// ->select(['id'])
+									->where(['user_id'=>$user_id])
+									->order(['id'=>'DESC'])
+								  ->first();
+							$re[$i]['before_balance']=$afterbal['before_balance'];
+							$re[$i]['after_balance']=$afterbal['after_balance'];
 							$re[$i]['user_name']=$user['name'];
 							$re[$i]['user_code']=$user['user_code'];
+							$re[$i]['bill_id']=$user['bill_id'];
+							$re[$i]['bill_amount']=$user['bill_amount'];
+							$re[$i]['created']=$user['created'];
 							$re[$i]['bill_month']=$selected_month;
 							$re[$i]['bill_product']=$this->billproduct($selected_month,$user_id);
 							$i++;
 						}
+						// pr($re);
+						// die;
 						$this->set(compact('re'));
 					}
 					else
@@ -346,90 +383,113 @@ class BillController  extends AppController
 			$days=$this->weekdays($bill_start_date,$bill_date);
 			// pr($productdata);
 			// die;
+			$total_amount=0;
 			foreach($productdata as $product)
 			{
-			    $product_id=$product['product_id'];
+				
+			     $product_id=$product['product_id'];
 			    $copies=$product['copies'];
-			  
-			   $productprice=$this->productpricelist($product_id);
-			   if(count($productprice)>0)
-			   {
-				   if($holiday_exit=="y")
+			    $product_type=$product['product']['price_type'];
+			    $fix_price=$product['product']['fix_price'];
+				
+				if($product_type=="daily")
+				{
+				   $productprice=$this->productpricelist($product_id);
+				   if(count($productprice)>0)
 				   {
-					   if (in_array(1,$holidaydata))
+					   if($holiday_exit=="y")
 					   {
-						   $sun_rate=0;
+						   if (in_array(1,$holidaydata))
+						   {
+							   $sun_rate=0;
+						   }
+						   else
+						   {
+							 $sun_rate=($productprice['sun'])*($days['sun']);   
+						   }
+						   if (in_array(2,$holidaydata))
+						   {
+							   $mon_rate=0;
+						   }
+						   else
+						   {
+							 $mon_rate=($productprice['sun'])*($days['sun']);   
+						   }
+						   if (in_array(3,$holidaydata))
+						   {
+							   $tue_rate=0;
+						   }
+						   else
+						   {
+							 $tue_rate=($productprice['sun'])*($days['sun']);   
+						   }
+						   if (in_array(4,$holidaydata))
+						   {
+							   $wed_rate=0;
+						   }
+						   else
+						   {
+							 $wed_rate=($productprice['sun'])*($days['sun']);   
+						   }
+						   if (in_array(5,$holidaydata))
+						   {
+							   $thu_rate=0;
+						   }
+						   else
+						   {
+							 $thu_rate=($productprice['sun'])*($days['sun']);   
+						   }
+						   if (in_array(6,$holidaydata))
+						   {
+							   $fri_rate=0;
+						   }
+						   else
+						   {
+							 $fri_rate=($productprice['sun'])*($days['sun']);   
+						   }
+						   if (in_array(7,$holidaydata))
+						   {
+							   $sat_rate=0;
+						   }
+						   else
+						   {
+							 $sat_rate=($productprice['sun'])*($days['sun']);   
+						   }
 					   }
 					   else
 					   {
-						 $sun_rate=($productprice['sun'])*($days['sun']);   
-					   }
-					   if (in_array(2,$holidaydata))
-					   {
-						   $mon_rate=0;
-					   }
-					   else
-					   {
-						 $mon_rate=($productprice['sun'])*($days['sun']);   
-					   }
-					   if (in_array(3,$holidaydata))
-					   {
-						   $tue_rate=0;
-					   }
-					   else
-					   {
-						 $tue_rate=($productprice['sun'])*($days['sun']);   
-					   }
-					   if (in_array(4,$holidaydata))
-					   {
-						   $wed_rate=0;
-					   }
-					   else
-					   {
-						 $wed_rate=($productprice['sun'])*($days['sun']);   
-					   }
-					   if (in_array(5,$holidaydata))
-					   {
-						   $thu_rate=0;
-					   }
-					   else
-					   {
-						 $thu_rate=($productprice['sun'])*($days['sun']);   
-					   }
-					   if (in_array(6,$holidaydata))
-					   {
-						   $fri_rate=0;
-					   }
-					   else
-					   {
-						 $fri_rate=($productprice['sun'])*($days['sun']);   
-					   }
-					   if (in_array(7,$holidaydata))
-					   {
-						   $sat_rate=0;
-					   }
-					   else
-					   {
-						 $sat_rate=($productprice['sun'])*($days['sun']);   
-					   }
+						   $sun_rate=($productprice['sun'])*($days['sun']);
+						   $mon_rate=($productprice['mon'])*($days['mon']);
+						   $tue_rate=($productprice['tue'])*($days['tue']);
+						   $wed_rate=($productprice['wed'])*($days['wed']);
+						   $thu_rate=($productprice['thu'])*($days['thu']);
+						   $fri_rate=($productprice['fri'])*($days['fri']);
+						   $sat_rate=($productprice['sat'])*($days['sat']);
+						}
+					   $total_rate=$sun_rate+$mon_rate+$tue_rate+$wed_rate+$thu_rate+$fri_rate+$sat_rate;
+					   $price=($total_rate)*($copies);
 				   }
 				   else
 				   {
-					   $sun_rate=($productprice['sun'])*($days['sun']);
-					   $mon_rate=($productprice['mon'])*($days['mon']);
-					   $tue_rate=($productprice['tue'])*($days['tue']);
-					   $wed_rate=($productprice['wed'])*($days['wed']);
-					   $thu_rate=($productprice['thu'])*($days['thu']);
-					   $fri_rate=($productprice['fri'])*($days['fri']);
-					   $sat_rate=($productprice['sat'])*($days['sat']);
-					}
-				   $total_rate=$sun_rate+$mon_rate+$tue_rate+$wed_rate+$thu_rate+$fri_rate+$sat_rate;
-				   $price=($total_rate)*($copies);
-			   }
-			   else
-			   {
-				 // take action   
-			   }
+					 // take action   
+				   }
+			}
+			else if($product_type=="monthly")
+			{
+				$price=$fix_price;
+			} else if($product_type=="15")
+			{
+				
+			   $price=($fix_price)*2;
+			}  else  if($product_type=="fix")
+			{
+				$price=$fix_price;
+			} else if($product_type=="weekly")
+			{
+				// no of week in these days 
+				$price=$fix_price*5;
+			}
+			    
 			   // save all single bill product entry 
 			   $bp['bill_id']=$new_bill_no;
 			   $bp['user_id']=$user_id;
@@ -446,14 +506,16 @@ class BillController  extends AppController
 			   // die;
 			   $billentity=$BillproductTable->newEntity($bp);
 			   $BillproductTable->save($billentity);
+			   $total_amount=$total_amount+$price;
 			}
 		}
 		else
 		{
-		   $price=0;	
+		   $total_amount=0;	
 		}
-		
-		return $price;
+		// echo $total_amount;
+		// die;
+		return $total_amount;
 	}
 	public function productpricelist($product_id)
 	{

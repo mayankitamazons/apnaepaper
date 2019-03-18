@@ -48,7 +48,7 @@
                                                 <th>User Name</th>
                                                 <th>User code</th>
                                                 <th>Mobile</th>
-                                                <th>Route/Area</th>
+                                                <th>Route/Additional Group </th>
                                               
                                                 
                                               
@@ -64,7 +64,7 @@
 												<td><?php echo $user['user']['name']; ?></td>
                                                 <td><?php echo $user['user']['user_code']; ?></td>
                                                 <td><?php echo $user['user']['mobile']; ?></td>
-                                                <td><?php echo $user['user']['route']['route_name']." / ".$user['user']['route']['area'][0]['area_name']; ?></td>
+                                                <td><?php echo $user['user']['route']['route_name']." / ".$user['user']['area']['area_name']; ?></td>
                                                
                                                 
                                              

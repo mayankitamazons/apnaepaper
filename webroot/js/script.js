@@ -16,18 +16,13 @@
 		  $('#monthly_price').hide();
 		  $('#fix_price').hide();
 		}
-		if(price_type=="monthly")
+		else
 		{
-		  $('#monthly_price').show();
-		  $('#daily_price').hide();
-		  $('#fix_price').hide();
-		}
-		if(price_type=="fix")
-		{
-		  $('#fix_price').show();
+			 $('#fix_price').show();
 		   $('#daily_price').hide();
 		  $('#monthly_price').hide();
 		}
+		
 		
 	});
 	$('.user_code_validate').click(function(e) {
@@ -62,6 +57,7 @@
 						 {
 							 
 							$('.user_code_error').html(msg);
+							$('.user_code_error').css('color', 'black');
 							$('.user_code_error').show();
 						    
 						 }
@@ -189,117 +185,7 @@
 			}
 			
 	   }
-	   if(price_type=="monthly")
-	   {
-	       if($('.jan').val()=='')
-			{
-			  $(".jan").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".jan").removeClass("danger2");
-			}
-			if($('.feb').val()=='')
-			{
-			  $(".feb").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".feb").removeClass("danger2");
-			}
-			if($('.march').val()=='')
-			{
-			  $(".march").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".march").removeClass("danger2");
-			}
-			if($('.april').val()=='')
-			{
-			  $(".april").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".april").removeClass("danger2");
-			}
-			if($('.may').val()=='')
-			{
-			  $(".may").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".may").removeClass("danger2");
-			}
-			if($('.june').val()=='')
-			{
-			  $(".june").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".june").removeClass("danger2");
-			}
-			if($('.july').val()=='')
-			{
-			  $(".july").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".july").removeClass("danger2");
-			}
-			if($('.aug').val()=='')
-			{
-			  $(".aug").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".aug").removeClass("danger2");
-			}
-			if($('.sept').val()=='')
-			{
-			  $(".sept").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".sept").removeClass("danger2");
-			}
-			if($('.oct').val()=='')
-			{
-			  $(".oct").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".oct").removeClass("danger2");
-			}
-			if($('.nov').val()=='')
-			{
-			  $(".nov").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".nov").removeClass("danger2");
-			}
-			if($('.dec').val()=='')
-			{
-			  $(".dec").addClass("danger2");
-			    return false
-			}
-			else
-			{
-			   $(".dec").removeClass("danger2");
-			}
-	   }
+	  
 	    if(price_type=="fix")
 		{
 	       if($('.fix_price').val()=='')
@@ -414,8 +300,7 @@
 	$('.area_form').click(function(e) {
 	    var area_name=$('.area_name').val();
 		var area_code=$('.area_code').val();
-		var e = document.getElementById("route_id");
-		var selected_route_id = e.options[e.selectedIndex].value;
+		
 		// alert(strUser);
 	   if(area_name=='')
 	   {
@@ -442,19 +327,8 @@
 	      $(".area_code").removeClass("danger");
 			$('.area_code_error').hide();
 			
-	   }
-	   // alert(selected_route_id);
-	   if(selected_route_id==-1)
-	   {
-			$(".route_id").addClass("danger");
-			$('.area_route_error').show();
-			return false;   
-	   }
-	   else
-	   {
-		   $(".route_id").removeClass("danger");
-		$('.area_route_error').hide(); 
-	   }
+	   }   
+	  
 	});
 	$('.area_edit').click(function(e) {
 	   r_data = {};
@@ -476,7 +350,8 @@
 							$('#edit_area_id').val(data.id);
 							$('.edit_area_name').val(data.area_name);
 							$('.edit_area_code').val(data.area_code);
-							$('#edit_route_id').val(data.route.id);
+							$('.edit_delivery_charge').val(data.delivery_charge);
+							
 						    $('#editareaModel').modal('show'); 
 						 }
 						 else
@@ -496,8 +371,7 @@
 	$('.edit_area_form').click(function(e) {
 	    var edit_area_name=$('.edit_area_name').val();
 		var edit_area_code=$('.edit_area_code').val();
-		var e = document.getElementById("edit_route_id");
-		var selected_route_id = e.options[e.selectedIndex].value;
+		
 		// alert(strUser);
 	   if(edit_area_name=='')
 	   {
@@ -525,18 +399,8 @@
 			$('.edit_area_code_error').hide();
 			
 	   }
-	   // alert(selected_route_id);
-	   if(selected_route_id==-1)
-	   {
-			$(".edit_route_id").addClass("danger");
-			$('.edit_area_route_error').show();
-			return false;   
-	   }
-	   else
-	   {
-		   $(".edit_route_id").removeClass("danger");
-		$('.edit_area_route_error').hide(); 
-	   }
+	  
+	   
 	});
 	// hoker add form 
 	$('.hoker_form').click(function(e) {
@@ -577,15 +441,7 @@
 			$('.hoker_route_error').hide();
 			
 	   }
-	   if(area_count==0)
-	   {
-		   $('.hoker_area_error').show();
-		   return false;
-	   }
-	   else
-	   {
-		   $('.hoker_area_error').hide();   
-	   }
+	  
 	});
 	// create user route plan form
 	$('.route_plan').click(function(e) {
@@ -643,8 +499,7 @@
 		// alert(3);
 		var e = document.getElementById("route_id");
 		var selected_route_id = e.options[e.selectedIndex].value;
-		var e2 = document.getElementById("select_area");
-		var selected_area_id = e2.options[e2.selectedIndex].value;
+	
 		 r_data = {};
 		// alert(selected_route_id);
 		
@@ -657,14 +512,7 @@
 		}
 		else
 		{
-			if(selected_area_id==-1)
-			{
-				
-			}
-			else
-			{
-				r_data['area_id']=selected_area_id;
-			}
+			
 			r_data['route_id']=selected_route_id;
 			$.ajax({
 			type: "POST",
@@ -917,6 +765,10 @@
 						}
 				});
 		}
+		else if(bill_type=="single")
+		{
+		}
+		
 		
 		
 	 });
@@ -930,7 +782,7 @@
 		var keywords=$(this).val();
 		 var search_id = $(this).attr('field_id');
 		// alert(search_id);
-		if (keywords!='' && (keywords.length)>3) 
+		if (keywords!='')    
 		{   
 	       
 			var field_id="#search-box-"+search_id;
@@ -954,14 +806,32 @@
 			});
 		}
 	});
+	function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 	$(document).on('click', ".add_field",function () {
-		// alert(3);
+		   document.cookie = 'hokerlist'+ "=" + cvalue + ";" + expires + ";path=/";
+		var hokerstr=getCookie("hokerlist");
+		//alert(hokerstr);
 		 var add_id = $(this).attr('add_id');
 		 var add_field="#add_field_"+add_id;
 		 $(add_field).hide();
 		 var next_id=parseInt(add_id) + parseInt(1);
 		 // alert(next_id);
-		var h="<tr id='table_"+next_id+"'><td><input type='text' name='search_user[]' field_id='"+next_id+"' id='search-box-"+next_id+"'  class='search-box form-control form-control-danger' placeholder='Search user Name/ User code'><div id='suggesstion-box-"+next_id+"'></div></td><td><input type='number' id='rate_"+next_id+"' name='amount[]'  maxlength='5' class='form-control form-control-danger' placeholder='Enter Amount'></td><td class='text-nowrap'><a href='#' add_id='"+next_id+"' id='add_field_"+next_id+"'  class='add_field' data-toggle='tooltip' data-original-title='Add'><i class='fa fa-plus text-inverse m-r-10'></i></a><a  remove_id='"+next_id+"' id='remove_"+next_id+"' class='remove_field' data-toggle='tooltip' data-original-title='Close'><i class='fa fa-close text-danger'></i></a></td></tr>";
+		 //var hokerstr="<option>Mayank</option>";
+		var h="<tr id='table_"+next_id+"'><td><input type='text' name='search_user[]' field_id='"+next_id+"' id='search-box-"+next_id+"'  class='search-box form-control form-control-danger' placeholder='Search user Name/ User code'><div id='suggesstion-box-"+next_id+"'></div></td><td><input type='number' id='rate_"+next_id+"' name='amount[]'  maxlength='5' class='form-control form-control-danger' placeholder='Enter Amount'></td><td><select name='hoker_ids[]' class='form-control form-control-danger'><option value='-1'>Select Hoker Name</option>"+hokerstr+"</select></td><td class='text-nowrap'><a href='#' add_id='"+next_id+"' id='add_field_"+next_id+"'  class='add_field' data-toggle='tooltip' data-original-title='Add'><i class='fa fa-plus text-inverse m-r-10'></i></a><a  remove_id='"+next_id+"' id='remove_"+next_id+"' class='remove_field' data-toggle='tooltip' data-original-title='Close'><i class='fa fa-close text-danger'></i></a></td></tr>";
 	    $(".table_data").append(h);
 	});
 	$(document).on('click', ".remove_field",function () {
@@ -1024,6 +894,12 @@
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
+		$('#routeplantable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    });
 	    $('.input-daterange-timepicker').daterangepicker({
         timePicker: true,
         format: 'MM/DD/YYYY h:mm A',
@@ -1040,7 +916,15 @@
 		  alert(search_id);
 		  $(field_id).val(val);
 			$(box_id).hide();
-	 });   
+	 });
+// rejoin popup
+     $('.close_account').click(function(e) {
+		// alert(3);
+		var account_user_code=$(this).attr('account_user_code');
+		alert(account_user_code);
+		$('#account_user_code').val(account_user_code);
+		 $('#responsive-close-model').modal('show'); 
+	 });		 
 	function selectUser(val,search_id,user_id) {
 		 // var search_id = $(this).html();
 		 // var search_id = $(this).attr('search_id');

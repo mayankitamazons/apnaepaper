@@ -22,11 +22,11 @@
                                        
 									</div>
 									<div style="clear:both"></div>
-									 <div class="form-group col-md-3 m-t-20">
+									 <div class="form-group col-md-2 m-t-20">
                                         <label for="example-date-input" class="col-form-label">Price</label>
 										 <small class="price_error" style="color:#fc4b6c;display:none;">Select Price Type</small> 
 									</div>
-									<div class="form-group col-md-3 m-t-20">
+									<div class="form-group col-md-2 m-t-20">
 									<?php  $price_type=$productdata['price_type']; ?>
 									  <label class="custom-control custom-radio">
                                                 <input id="radio1" name="price_type" <?php if($price_type=="daily"){ echo "checked";} ?>  id="price_type" type="radio" value="daily" class="custom-control-input price_type">
@@ -35,7 +35,7 @@
                                             </label>
 										  
 									</div>
-									<div class="form-group col-md-3 m-t-20">
+									<div class="form-group col-md-2 m-t-20">
 									  <label class="custom-control custom-radio">
                                                 <input id="radio1" name="price_type" <?php if($price_type=="monthly"){ echo "checked";} ?>   value="monthly"  type="radio" class="custom-control-input price_type">
                                                 <span class="custom-control-indicator"></span>
@@ -43,7 +43,7 @@
                                             </label>
 										  
 									</div>
-									<div class="form-group col-md-3 m-t-20">
+									<div class="form-group col-md-2 m-t-20">
 									  <label class="custom-control custom-radio">
                                                 <input id="radio1" name="price_type"  <?php if($price_type=="fix"){ echo "checked";} ?>    value="fix"  type="radio" class="custom-control-input price_type">
                                                 <span class="custom-control-indicator"></span>
@@ -51,10 +51,26 @@
                                             </label>
 										  
 									</div>
+									<div class="form-group col-md-2 m-t-20">
+									  <label class="custom-control custom-radio">
+                                                <input id="radio1" name="price_type"  <?php if($price_type=="weekly"){ echo "checked";} ?>    value="fix"  type="radio" class="custom-control-input price_type">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Weekly</span>
+                                            </label>
+										  
+									</div>
+									<div class="form-group col-md-2 m-t-20">
+									  <label class="custom-control custom-radio">
+                                                <input id="radio1" name="price_type"  <?php if($price_type=="15"){ echo "checked";} ?>    value="15"  type="radio" class="custom-control-input price_type">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">15 days</span>
+                                            </label>
+										  
+									</div>
 									
-									 <div id="fix_price" style="<?php if($price_type!="fix"){ echo "display:none;";}?>" class="form-group col-md-12 m-t-20">
+									 <div id="fix_price" style="<?php if($price_type=="daily"){ echo "display:none;";}?>" class="form-group col-md-12 m-t-20">
 									 
-                                        <input type="text"  name="fix_price"  maxlength="5" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control fix_price" placeholder="Fix Price of Product">
+                                        <input type="text"  name="fix_price"  maxlength="5" value="<?php echo $productdata['fix_price']; ?>" class="form-control fix_price" placeholder="Fix Price of Product">
 									</div>
 									
 									<div id="daily_price" style="<?php if($price_type!="daily"){ echo "display:none;";}?>" class="row col-md-12">
@@ -62,97 +78,42 @@
 									   <div class="col-md-6">
 									       <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Sun</label> 
-										     <input type="text" name="sun" value="<?php echo $d['sun']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   class="form-control col-sm-6 sun">
+										     <input type="text" name="sun" value="<?php echo $d['sun']; ?>"    class="form-control col-sm-6 sun">
 										 </div>
 										<div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Mon</label> 
-										     <input type="text"  name="mon" value="<?php echo $d['mon']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   class="form-control col-sm-6 mon">
+										     <input type="text"  name="mon" value="<?php echo $d['mon']; ?>"   class="form-control col-sm-6 mon">
 										 </div>
 										  <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Tue</label> 
-										     <input type="text"   name="tue"  value="<?php echo $d['tue']; ?>"onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 tue">
+										     <input type="text"   name="tue"  value="<?php echo $d['tue']; ?>"  class="form-control col-sm-6 tue">
 										 </div>
 										 <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Wed</label> 
-										     <input type="text"  name="wed" value="<?php echo $d['wed']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 wed">
+										     <input type="text"  name="wed" value="<?php echo $d['wed']; ?>"  class="form-control col-sm-6 wed">
 										 </div>
 									   </div>
 									   <div class="col-md-6">
 									      <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Thu</label> 
-										     <input type="text"  name="thu" value="<?php echo $d['thu']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 thu">
+										     <input type="text"  name="thu" value="<?php echo $d['thu']; ?>"  class="form-control col-sm-6 thu">
 										 </div>
 										<div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Fri</label> 
-										     <input type="text"   name="fri"  value="<?php echo $d['fri']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 fri">
+										     <input type="text"   name="fri"  value="<?php echo $d['fri']; ?>"  class="form-control col-sm-6 fri">
 										 </div>
 										 	<div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Sat</label> 
-										     <input type="text"   name="sat" value="<?php echo $d['sat']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 sat">
+										     <input type="text"   name="sat" value="<?php echo $d['sat']; ?>"   class="form-control col-sm-6 sat">
 										 </div>
 									   </div>
 									</div>
-									<div id="monthly_price" style="<?php if($price_type!="monthly"){ echo "display:none;";}?>" class="row col-md-12">
 									
-									    <div class="col-md-6">
-									      <div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">Jan</label> 
-										     <input type="text"  value="<?php echo $m['jan']; ?>"  name="jan" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 jan">
-										 </div>
-										<div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">Feb</label> 
-										     <input type="text"  value="<?php echo $m['feb']; ?>" name="feb"  onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 feb">
-										 </div>
-										 	<div class="col-sm-4">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">March</label> 
-										     <input type="text"   value="<?php echo $m['march']; ?>" name="march"  onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   name="sat" class="form-control col-sm-6 march">
-										 </div>
-										  <div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">April</label> 
-										     <input type="text"  value="<?php echo $m['april']; ?>"  name="april"  onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 april">
-										 </div>
-										<div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">May</label> 
-										     <input type="text"   value="<?php echo $m['may']; ?>" name="may" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  class="form-control col-sm-6 may">
-										 </div>
-										 	<div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">June</label> 
-										     <input type="text" value="<?php echo $m['june']; ?>"  onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   name="june" class="form-control col-sm-6 june">
-										 </div>
-									   </div>
-									   <div class="col-md-6">
-									      <div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">July</label> 
-										     <input type="text" value="<?php echo $m['july']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   name="july" class="form-control col-sm-6 july">
-										 </div>
-										<div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">Aug</label> 
-										     <input type="text" value="<?php echo $m['aug']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   name="aug" class="form-control col-sm-6 aug">
-										 </div>
-										 	<div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">Sept</label> 
-										     <input type="text" value="<?php echo $m['sep']; ?>"  onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  name="sept" class="form-control col-sm-6 sept">
-										 </div>
-										 <div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">Oct</label> 
-										     <input type="text"  value="<?php echo $m['oct']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   name="oct" class="form-control col-sm-6 oct">
-										 </div>
-										 <div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">Nov</label> 
-										     <input type="text" value="<?php echo $m['nov']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"   name="nov" class="form-control col-sm-6 nov">
-										 </div>
-										 <div class="col-sm-3">
-										   <label for="inputEmail3" class="text-right control-label col-form-label">Dec</label> 
-										     <input type="text"  value="<?php echo $m['dec']; ?>" onkeyup="if (/\D/g.test(this.value))  this.value = this.value.replace(/\D/g,'')"  name="dec" class="form-control col-sm-6 dec">
-										 </div>
-									   </div>
-									   
-									</div>
 									 
 									 <div class="form-group col-md-12" style="float:right;">
                                           
                                                 
-                                           <input style="float:right;" type="submit" class="btn btn-danger waves-light product_form" value="Create"/>
+                                           <input style="float:right;" type="submit" class="btn btn-danger waves-light product_form" value="Edit"/>
                                         </div>
 								</form>
                             </div>

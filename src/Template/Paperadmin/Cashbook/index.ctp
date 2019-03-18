@@ -1,3 +1,4 @@
+
 <!-- ============================================================== -->
                 <!-- Start Page Content -->
                 <!-- ============================================================== -->
@@ -30,6 +31,7 @@
                                             <tr>
                                                 <th>Search Field</th>
                                                <th>Amount</th>
+                                                <th>Hoker Name</th>
                                                 <th>Action</th>
                                               
                                             </tr>
@@ -42,6 +44,14 @@
                                                 <div id="suggesstion-box-1"></div>
 												</td>
                                                 <td><input type="number" id="rate_1"  maxlength="5" name="amount[]" class="form-control form-control-danger rate" placeholder="Enter Amount">
+                                                    </td>
+												<td>
+												<select class="form-control form-control-danger" name="hoker_ids[]">
+												<option value='-1'>Select Hoker Name</option>
+												  <?php if(count($hokerdata)>0){ foreach($hokerdata as $user){ ?>
+												  <option value="<?php echo $user['id']; ?>"><?php echo $user['name']; ?></option>
+												  <?php }} ?>
+												</select>
                                                     </td>
                                                   <td class="text-nowrap">
                                                     <a  add_id="1" id="add_field_1" class="add_field" data-toggle="tooltip" data-original-title="Add"> <i class="fa fa-plus text-inverse m-r-10"></i> </a>
@@ -74,6 +84,25 @@
                        
                     </div>
 						</form>
+						
                 <!-- ============================================================== -->
                 <!-- End PAge Content -->
                 <!-- ============================================================== -->
+				
+	<script>
+	var exdays=1;
+	 var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+	
+	var cvalue='';
+	<?php  $h=0; foreach($hokerdata as $hoker)
+	{  ?>
+	//var cvalue +="<option value=<?php echo $hoker['id'] ?>><?php echo $hoker['name']; ?></option>";
+	 cvalue += "<option value=<?php echo $hoker['id'] ?>><?php echo $hoker['name']; ?></option>";
+<?php 	}
+	?>
+	
+	var cname="hokerlist";
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	</script>

@@ -19,6 +19,7 @@ class AreaTable extends Table
     {
         parent::initialize($config);
 		$this->belongsTo('Route');
+		$this->belongsTo('Users');
 		$this->table('area');
 		
     }

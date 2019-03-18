@@ -6,11 +6,14 @@
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">User List</h4>
-                                <h6 class="card-subtitle">Export data to Copy, CSV, Excel, PDF & Print</h6>
+                               
 								<?= $this->Flash->render() ?>
-								<a  href="<?php echo $this->Url->build(['controller'=>'user','action'=>'createuser']);?>" style="float:right;" class="btn waves-effect waves-light btn-rounded btn-primary">Create</a>
+								<a  href="<?php echo $this->Url->build(['controller'=>'user','action'=>'createuser']);?>" style="float:left;" class="btn waves-effect waves-light btn-rounded btn-primary">Create</a>
+								
+								
                                 <div class="table-responsive m-t-40">
 								<?php if(count($userdata)>0){?>
+								
                                     <table id="example24" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                         <thead>
                                             <tr>

@@ -8,7 +8,9 @@
                             <div class="card-body">
                                 <h4 class="card-title">Hoker List</h4>
 								<?= $this->Flash->render() ?>
-								 <button type="button"  data-toggle="modal" data-target="#responsive-modal" style="float:right;" class="btn waves-effect waves-light btn-rounded btn-primary">Create New</button>
+								 <button type="button"  data-toggle="modal" data-target="#responsive-modal" style="float:left;" class="btn waves-effect waves-light btn-rounded btn-primary">Create New</button>
+								 <br/>
+								 <br/>
                               <!-- sample modal content -->
                                 <div id="responsive-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                                     <div class="modal-dialog">
@@ -45,14 +47,7 @@
 										<?php } ?>
 										 </select>
 									</div>
-									<div class="form-group col-md-12 m-t-20 demo-checkbox">
-									<input type="hidden" id="area_id" name="area_id"/>
-									<h4>Area List</h4>
-									   <small class="hoker_area_error" style="color:#fc4b6c;display:none;">Select At least one area for service</small> 
-                                         <div id="area_list">
 									
-											</div>
-									</div>
 									
                                             </div>
                                             <div class="modal-footer">
@@ -75,12 +70,13 @@
                                             <div class="modal-body">
                                                
 										 <?php  echo $this->Form->create('edit_route', [
-													'url' => ['controller' => 'Setting', 'action' => 'editroute'],
+													'url' => ['controller' => 'user', 'action' => 'edithoker'],
 													'class'=>['form-material m-t-40 row']
 												]); ?>
                                     <div class="form-group col-md-6 m-t-20">
                                         <input type="text" name="name" class="form-control form-control-line edit_hoker_name" placeholder="Hoker Name">
-										<small class="edit_hoker_name_error" style="color:#fc4b6c;display:none;">Hoker Name is Required </small> 
+										<small class="edit_hoker_name_error" name="name" style="color:#fc4b6c;display:none;">Hoker Name is Required </small> 
+										
 									</div>
                                     <div class="form-group col-md-6 m-t-20">
 									<input type="hidden" id="edit_user_id" name="user_id"/> 
@@ -90,9 +86,9 @@
 									  <div class="form-group col-md-6 m-t-20">
                                         <input type="text" name="mobile" class="form-control form-control-line edit_hoker_mobile" placeholder="Mobile"> 
 									</div>
-                                    <div class="form-group col-md-6 m-t-20">
+                                    <!--div class="form-group col-md-6 m-t-20">
                                         <input type="email" id="example-email2" name="password" class="form-control edt_hoker_password" placeholder="Password">
-									</div>
+									</div!-->
 									<div class="form-group col-md-6 m-t-20">
                                        <input class="form-control edit_hoker_join_date" type="date" name="join_date" placeholder="Joining Date" id="example-date-input">
 									</div>
@@ -105,18 +101,14 @@
 										<?php } ?>
 										 </select>  
 									</div>
-									<div class="form-group col-md-12 m-t-20 demo-checkbox">
-									<h4>Area List</h4>
-									<small class="edit_hoker_area_error" style="color:#fc4b6c;display:none;">Select At least one area for hoker </small> 
-                                    <div id="edit_area_list">
-									</div>
-									</div>
-									</form>
-                                            </div>
-                                            <div class="modal-footer">
+									 </div>
+									<div class="modal-footer">
                                                 <button type="button" class="btn btn-default waves-effect" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-danger waves-effect waves-light">Save</button>
+                                                <input type="submit" class="btn btn-danger waves-light edit_area_form" value="Edit"/>
                                             </div>
+									</form>
+                                           
+                                           
                                         </div>
                                     </div>
                                 </div>

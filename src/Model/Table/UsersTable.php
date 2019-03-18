@@ -19,8 +19,10 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 		$this->belongsTo('Route');
-		// $this->hasOne('RoutePlan');
-		
+		$this->hasMany('Usertransation');
+		$this->hasMany('Userproduct');
+		$this->hasMany('Userbill');
+		$this->belongsTo('Area');
 		$this->table('users');
 		
     }

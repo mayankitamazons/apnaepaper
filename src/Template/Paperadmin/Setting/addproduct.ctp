@@ -8,11 +8,11 @@
                                 <h4 class="card-title">Add product</h4>
 								<form class="form-material m-t-40 row" method="post">
                                     <div class="form-group col-md-6 m-t-20 ">
-                                        <input type="text" name="product_name" id="product_name" class="form-control form-control-line " placeholder="Product Name"> 
+                                        <input type="text" name="product_name"  autocomplete="off" id="product_name" class="form-control form-control-line " placeholder="Product Name"> 
 											<small class="prdouct_name_error" style="color:#fc4b6c;display:none;">Product Name is Required </small> 
 									</div>
                                     <div class="form-group col-md-6 m-t-20">
-                                        <input type="text" id="product_code"   name="product_code" class="form-control" placeholder="Product Code">
+                                        <input type="text" id="product_code"   autocomplete="off"  name="product_code" class="form-control" placeholder="Product Code">
 									    <small class="prdouct_code_error" style="color:#fc4b6c;display:none;">Product Code is Required </small> 
 										</div>
 									<div class="form-group col-md-6 m-t-20">
@@ -22,11 +22,11 @@
                                        
 									</div>
 									<div style="clear:both"></div>
-									 <div class="form-group col-md-3 m-t-20">
+									 <div class="form-group col-md-2 m-t-20">
                                         <label for="example-date-input" class="col-form-label">Price</label>
 										 <small class="price_error" style="color:#fc4b6c;display:none;">Select Price Type</small> 
 									</div>
-									<div class="form-group col-md-3 m-t-20">
+									<div class="form-group col-md-2 m-t-20">
 									  <label class="custom-control custom-radio">
                                                 <input id="radio1" name="price_type" checked  id="price_type" type="radio" value="daily" class="custom-control-input price_type">
                                                 <span class="custom-control-indicator"></span>
@@ -34,7 +34,7 @@
                                             </label>
 										  
 									</div>
-									<!--div class="form-group col-md-3 m-t-20">
+									<div class="form-group col-md-2 m-t-20">
 									  <label class="custom-control custom-radio">
                                                 <input id="radio1" name="price_type"  value="monthly"  type="radio" class="custom-control-input price_type">
                                                 <span class="custom-control-indicator"></span>
@@ -42,14 +42,30 @@
                                             </label>
 										  
 									</div>
-									<div class="form-group col-md-3 m-t-20">
+									<div class="form-group col-md-2 m-t-20">
 									  <label class="custom-control custom-radio">
                                                 <input id="radio1" name="price_type"  value="fix"  type="radio" class="custom-control-input price_type">
                                                 <span class="custom-control-indicator"></span>
                                                 <span class="custom-control-description">Fix</span>
                                             </label>
 										  
-									</div!-->
+									</div>
+									<div class="form-group col-md-2 m-t-20">
+									  <label class="custom-control custom-radio">
+                                                <input id="radio1" name="price_type"  value="weekly"  type="radio" class="custom-control-input price_type">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Weekly</span>
+                                            </label>
+										  
+									</div>
+									<div class="form-group col-md-2 m-t-20">
+									  <label class="custom-control custom-radio">
+                                                <input id="radio1" name="price_type"  value="15"  type="radio" class="custom-control-input price_type">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">15 days</span>
+                                            </label>
+										  
+									</div>
 									 <div id="fix_price" style="display:none;" class="form-group col-md-12 m-t-20">
 									 
                                         <input type="number"  name="fix_price"  maxlength="5"  class="form-control fix_price" placeholder="Fix Price of Product">
@@ -60,33 +76,33 @@
 									   <div class="col-md-6">
 									       <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Sun</label> 
-										     <input type="text" name="sun"   class="form-control col-sm-6 sun">
+										     <input type="text" name="sun"  autocomplete="off"   class="form-control col-sm-6 sun">
 										 </div>
 										<div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Mon</label> 
-										     <input type="text"  name="mon"   class="form-control col-sm-6 mon">
+										     <input type="text"  autocomplete="off" name="mon"   class="form-control col-sm-6 mon">
 										 </div>
 										  <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Tue</label> 
-										     <input type="text"   name="tue"  class="form-control col-sm-6 tue">
+										     <input type="text"    autocomplete="off"  name="tue"  class="form-control col-sm-6 tue">
 										 </div>
 										 <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Wed</label> 
-										     <input type="text"  name="wed"   class="form-control col-sm-6 wed">
+										     <input type="text"   autocomplete="off" name="wed"   class="form-control col-sm-6 wed">
 										 </div>
 									   </div>
 									   <div class="col-md-6">
 									      <div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Thu</label> 
-										     <input type="text"  name="thu"   class="form-control col-sm-6 thu">
+										     <input type="text"    autocomplete="off" name="thu"   class="form-control col-sm-6 thu">
 										 </div>
 										<div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Fri</label> 
-										     <input type="text"   name="fri"  class="form-control col-sm-6 fri">
+										     <input type="text"  autocomplete="off"   name="fri"  class="form-control col-sm-6 fri">
 										 </div>
 										 	<div class="col-sm-3">
 										   <label for="inputEmail3" class="text-right control-label col-form-label">Sat</label> 
-										     <input type="text"   name="sat"  class="form-control col-sm-6 sat">
+										     <input type="text"  autocomplete="off"   name="sat"  class="form-control col-sm-6 sat">
 										 </div>
 									   </div>
 									</div>

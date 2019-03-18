@@ -10,7 +10,7 @@
                         <div class="card">
 						<form method="post">
                             <div class="card-body">
-                                <h4 class="card-title">Create Bill</h4>
+                                <h4 class="card-title">Create Active User Bill</h4>
                                 
 								<?= $this->Flash->render() ?>
 								
@@ -36,7 +36,11 @@
 									<div id="user_search_div" class="col-md-6" style="display:none;">
                                             <div class="form-group has-success">
                                                     <label class="control-label">Enter User name/Code</label>
-                                                    <input type="text" id="lastName" class="form-control form-control-danger" placeholder="Search user Name/ User code/ Bill no...">
+                                                   
+													 <input type="text" field_id='1' autocomplete="off"  id="search-box-1"   placeholder="Search user Name/ User code/ Bill no..."  class="search-box form-control" name="user_detail">
+									   
+									   <div  style="display:none;" id="translControl"></div>
+										<div id="suggesstion-box-1"></div>
                                             </div>
 									</div>
 										<div class="row" style="float:right" >

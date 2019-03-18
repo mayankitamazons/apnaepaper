@@ -1,4 +1,8 @@
-     <!-- ============================================================== -->
+  <script type="text/javascript" src="http://www.google.com/jsapi">
+
+</script>
+    
+	<!-- ============================================================== -->
                 <!-- Start Page Content -->
                 <!-- ============================================================== -->
                 <div class="row">
@@ -26,8 +30,10 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="control-label"> Name <span style="color:red;">* </span></label>
-                                                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter  name">
-                                                  <small class="user_name_error" style="color:#fc4b6c;display:none;">User Name is Required </small>  </div>
+                                                    <input type="text" id="name" autocomplete="off" name="name" class="form-control" placeholder="Enter  name">
+                                                  <small class="user_name_error" style="color:#fc4b6c;display:none;">User Name is Required </small>
+													<div  style="display:none;" id="translControl"></div>
+												  </div>
                                             
 											</div>
 											
@@ -89,8 +95,8 @@
                                                 </div>
                                             </div>   
 											<div class="col-md-12 route_area" style="display:none;" >
-											Select Area<span style="color:red;">* </span>
-											<small class="area_id_error" style="color:#fc4b6c;display:none;">Select Area to Add User </small> 
+											Select Additional Group
+											<small class="area_id_error" style="color:#fc4b6c;display:none;">Select Additional Group to Add User </small> 
 											   <select class="select2" id="select_area" name="select_area" style="width: 100%">
 											   
                                     
@@ -100,7 +106,7 @@
                                             <!--/span-->
                                         </div>
                                         <!--/row-->
-                                        <h3 class="box-title m-t-40">Additional info </h3>
+                                        <!--h3 class="box-title m-t-40">Additional info </h3>
                                         <hr>
                                        
                                         <div class="row">
@@ -110,16 +116,16 @@
                                                     <input type="text" id="pan_no" name="pan_no" class="form-control">
                                                 </div>
                                             </div>
-                                            <!--/span-->
+                                         
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Aadhar No</label>
                                                     <input type="text" id="aadhar_no" name="adhar_no" class="form-control">
                                                 </div>
                                             </div>
-                                            <!--/span-->
+                                           
                                         </div>
-                                        <!--/row-->
+                                       
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -127,7 +133,7 @@
                                                     <input type="text" id="extra_phoneno" name="extra_phoneno"class="form-control">
                                                 </div>
                                             </div>
-                                            <!--/span-->
+                                            
                                              <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label class="control-label">Date of Birth</label>
@@ -136,7 +142,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!--/span-->
+                                          
                                         </div>
 										<div class="row">
                                             <div class="col-md-12 ">
@@ -145,7 +151,7 @@
                                                    <textarea class="form-control" id="address" name="address"></textarea>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div!-->
                                     </div>
                                    
                                
@@ -420,4 +426,65 @@ function PrintArea(val) {
 		});
 	}
 }
+</script>
+  <script type="text/javascript">
+
+
+
+  // Load the Google Transliteration API
+
+  google.load("elements", "1", {
+
+        packages: "transliteration"
+
+      });
+
+
+
+  function onLoad() {
+
+    var options = {
+
+      sourceLanguage: 'en',
+
+      destinationLanguage: ['hi'],
+
+      shortcutKey: 'ctrl+m',
+
+      transliterationEnabled: true
+
+    };
+
+
+
+    // Create an instance on TransliterationControl with the required
+
+    // options.
+
+    var control =
+
+        new google.elements.transliteration.TransliterationControl(options);
+
+
+
+    // Enable transliteration in the textfields with the given ids.
+
+    var ids = [ "name"];
+
+    control.makeTransliteratable(ids);
+
+
+
+    // Show the transliteration control which can be used to toggle between
+
+    // English and Hindi and also choose other destination language.
+
+    control.showControl('translControl');
+
+  }
+
+  google.setOnLoadCallback(onLoad);
+
+
+
 </script>

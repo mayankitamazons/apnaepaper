@@ -65,7 +65,7 @@
                                             </div>
 									</div>
 											<div class="row" style="float:right" >
-										<input type="submit" style="float:right" value="Create" class="btn btn-success create_bill"/> 
+										<input type="submit" style="float:right" value="Create" class="btn btn-success print_bill"/> 
                                 
 								</div>
 								<div>

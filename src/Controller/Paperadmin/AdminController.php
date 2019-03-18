@@ -49,7 +49,8 @@ class AdminController extends AppController
 					$utcdate=date('Y-m-d');
 					$current_utc=strtotime($utcdate);
 					$encry="Jy5d1F4JC0p11YA8W1adqZ0KjC3Q85AB".$password;
-					$newpass=sha1($encry);
+					 $newpass=sha1($encry);
+					// die;
 					$checkuserstatus=$UserTable->find()
 						->where(['Users.email'=>$username,'Users.password'=>$newpass,'Users.role_id'=>'2'])
 					  ->first();
@@ -125,7 +126,7 @@ class AdminController extends AppController
 		$totalbill=$UserbillTable->find('all',['conditions'=>['status'=>'y','parent_user_id'=>$parent_user_id]])->count();
 		$totalcashentry=$CashMemoTable->find('all',['conditions'=>['parent_user_id'=>$parent_user_id]])->count();
         $recentmemo=$CashMemoTable->find('all',['conditions'=>['parent_user_id'=>$parent_user_id],'order'=>['id'=>'DESC']])->limit(10)->toArray();
-		$recentuser=$UserTable->find('all',['conditions'=>['status'=>'active','parent_user_id'=>$parent_user_id],'order'=>['id'=>'DESC']])->limit(10)->toArray();
+		$recentuser=$UserTable->find('all',['conditions'=>['status'=>'active','parent_user_id'=>$parent_user_id,'role_id'=>1],'order'=>['id'=>'DESC']])->limit(10)->toArray();
 		// pr($recentmemo);
 		// die;
 		$this->set(compact('active_user','totalroute','totalcashentry','totalbill'));
